@@ -2,21 +2,102 @@
 
 static Window *window;
 static TextLayer *text_layer;
+static TextLayer *time_layer;
+static TextLayer *date_layer;
+static TextLayer *ampm_layer;
+static TextLayer *icon_layer;
+static TextLayer *temp_layer;
+static TextLayer *batt_layer;
+static TextLayer *btc_layer;
+static TextLayer *fitbit_layer;
+
 
 
 static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
+  // For debugging
   static char boundtext[20];
+  snprintf(boundtext, 20, "w=%d, h=%d\ntest", bounds.size.w, bounds.size.h);
 
-  snprintf(boundtext, 20, "w=%d, h=%d", bounds.size.w, bounds.size.h);
+  // Build the time layer
+  time_layer = text_layer_create(GRect(2, 2, 115, 50));
+  text_layer_set_background_color(time_layer, GColorBlack);
+  text_layer_set_text_color(time_layer, GColorWhite);
+  text_layer_set_text(time_layer, "TIME");
+  text_layer_set_text_alignment(time_layer, GTextAlignmentCenter);
+  layer_add_child(window_layer, text_layer_get_layer(time_layer));
+
+  // Build the ampm layer
+  ampm_layer = text_layer_create(GRect(119, 2, 23, 50));
+  text_layer_set_background_color(ampm_layer, GColorBlack);
+  text_layer_set_text_color(ampm_layer, GColorWhite);
+  text_layer_set_text(ampm_layer, "A\nM");
+  text_layer_set_text_alignment(ampm_layer, GTextAlignmentCenter);
+  layer_add_child(window_layer, text_layer_get_layer(ampm_layer));
+
+  // Build the date layer
+  date_layer = text_layer_create(GRect(2, 54, 140, 25));
+  text_layer_set_background_color(date_layer, GColorBlack);
+  text_layer_set_text_color(date_layer, GColorWhite);
+  text_layer_set_text(date_layer, "Date");
+  text_layer_set_text_alignment(date_layer, GTextAlignmentCenter);
+  layer_add_child(window_layer, text_layer_get_layer(date_layer));  
+
+  // Build the weather icon layer
+  icon_layer = text_layer_create(GRect(2, 81, 40, 40));
+  text_layer_set_background_color(icon_layer, GColorBlack);
+  text_layer_set_text_color(icon_layer, GColorWhite);
+  text_layer_set_text(icon_layer, "icon");
+  text_layer_set_text_alignment(icon_layer, GTextAlignmentCenter);
+  layer_add_child(window_layer, text_layer_get_layer(icon_layer));
+
+  // Build the temp layer
+  temp_layer = text_layer_create(GRect(44, 81, 73, 40));
+  text_layer_set_background_color(temp_layer, GColorBlack);
+  text_layer_set_text_color(temp_layer, GColorWhite);
+  text_layer_set_text(temp_layer, "temp");
+  text_layer_set_text_alignment(temp_layer, GTextAlignmentCenter);
+  layer_add_child(window_layer, text_layer_get_layer(temp_layer));
+
+  // Build the battery layer
+  batt_layer = text_layer_create(GRect(119, 81, 23, 40));
+  text_layer_set_background_color(batt_layer, GColorBlack);
+  text_layer_set_text_color(batt_layer, GColorWhite);
+  text_layer_set_text(batt_layer, "b\na");
+  text_layer_set_text_alignment(batt_layer, GTextAlignmentCenter);
+  layer_add_child(window_layer, text_layer_get_layer(batt_layer));
+
+  // Build the bitcoin price layer
+  btc_layer = text_layer_create(GRect(2, 123, 140, 20));
+  text_layer_set_background_color(btc_layer, GColorBlack);
+  text_layer_set_text_color(btc_layer, GColorWhite);
+  text_layer_set_text(btc_layer, "BTC price");
+  text_layer_set_text_alignment(btc_layer, GTextAlignmentCenter);
+  layer_add_child(window_layer, text_layer_get_layer(btc_layer));
+
+  // Build the fitbit layer
+  fitbit_layer = text_layer_create(GRect(2, 145, 140, 21));
+  text_layer_set_background_color(fitbit_layer, GColorBlack);
+  text_layer_set_text_color(fitbit_layer, GColorWhite);
+  text_layer_set_text(fitbit_layer, "Fitbit");
+  text_layer_set_text_alignment(fitbit_layer, GTextAlignmentCenter);
+  layer_add_child(window_layer, text_layer_get_layer(fitbit_layer));
 
 
-  text_layer = text_layer_create((GRect) { .origin = { 0, 72 }, .size = { bounds.size.w, 20 } });
+
+
+
+  /*
+  // Build the debugging text layer
+  text_layer = text_layer_create(GRect(2, 54, 140, 80));
+  text_layer_set_background_color(text_layer, GColorBlack);
+  text_layer_set_text_color(text_layer, GColorWhite);
   text_layer_set_text(text_layer, boundtext);
   text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(text_layer));
+  */
 }
 
 static void window_unload(Window *window) {
