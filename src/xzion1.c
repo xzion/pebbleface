@@ -77,7 +77,7 @@ static void window_load(Window *window) {
   layer_add_child(window_layer, text_layer_get_layer(time_layer));
 
   // Build the ampm layer
-  ampm_layer = text_layer_create(GRect(114, -2, 32, 42));
+  ampm_layer = text_layer_create(GRect(124, -2, 20, 42));
   text_layer_set_font(ampm_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
   text_layer_set_text(ampm_layer, "A\nM");
   text_layer_set_text_alignment(ampm_layer, GTextAlignmentCenter);
@@ -91,31 +91,31 @@ static void window_load(Window *window) {
   layer_add_child(window_layer, text_layer_get_layer(date_layer));  
 
   // Build the weather icon layer
-  icon_layer = text_layer_create(GRect(2, 81, 40, 40));
+  icon_layer = text_layer_create(GRect(0, 69, 40, 40));
   text_layer_set_text(icon_layer, "icon");
   text_layer_set_text_alignment(icon_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(icon_layer));
 
   // Build the temp layer
-  temp_layer = text_layer_create(GRect(44, 81, 73, 40));
+  temp_layer = text_layer_create(GRect(42, 69, 80, 40));
   text_layer_set_text(temp_layer, "temp");
   text_layer_set_text_alignment(temp_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(temp_layer));
 
   // Build the battery layer
-  batt_layer = text_layer_create(GRect(119, 81, 23, 40));
+  batt_layer = text_layer_create(GRect(124, 69, 20, 40));
   text_layer_set_text(batt_layer, "b\na");
   text_layer_set_text_alignment(batt_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(batt_layer));
 
   // Build the bitcoin price layer
-  btc_layer = text_layer_create(GRect(2, 123, 140, 20));
+  btc_layer = text_layer_create(GRect(0, 111, 144, 25));
   text_layer_set_text(btc_layer, "BTC price");
   text_layer_set_text_alignment(btc_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(btc_layer));
 
   // Build the fitbit layer
-  fitbit_layer = text_layer_create(GRect(2, 145, 140, 21));
+  fitbit_layer = text_layer_create(GRect(0, 138, 144, 30));
   text_layer_set_text(fitbit_layer, "Fitbit");
   text_layer_set_text_alignment(fitbit_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(fitbit_layer));
