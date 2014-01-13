@@ -138,18 +138,24 @@ static void window_load(Window *window) {
 
   // Build the weather icon layer
   icon_layer = text_layer_create(GRect(0, 69, 40, 40));
+  text_layer_set_background_color(icon_layer, GColorBlack);
+  text_layer_set_text_color(icon_layer, GColorWhite);
   text_layer_set_text(icon_layer, "icon");
   text_layer_set_text_alignment(icon_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(icon_layer));
 
   // Build the temp layer
   temp_layer = text_layer_create(GRect(42, 69, 80, 40));
+  text_layer_set_background_color(temp_layer, GColorBlack);
+  text_layer_set_text_color(temp_layer, GColorWhite);
   text_layer_set_text(temp_layer, "temp");
   text_layer_set_text_alignment(temp_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(temp_layer));
 
   // Build the battery layer
   batt_layer = text_layer_create(GRect(124, 69, 20, 40));
+  text_layer_set_background_color(batt_layer, GColorBlack);
+  text_layer_set_text_color(batt_layer, GColorWhite);
   text_layer_set_text(batt_layer, "b\na");
   text_layer_set_text_alignment(batt_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(batt_layer));
