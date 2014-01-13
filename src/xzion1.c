@@ -11,10 +11,39 @@ static TextLayer *batt_layer;
 static TextLayer *btc_layer;
 static TextLayer *fitbit_layer;
 
+static uint8_t mincount;
+
+// Bluetooth Event Handler
+static void handle_bluetooth(bool connected) {
+  if (connected) {
+    text_layer_set_text(icon_layer, "icon");
+    vibes_long_pulse();
+  } else {
+    text_layer_set_text(icon_layer, "conn\nlost");
+    vibes_long_pulse();
+  }
+}
+
+
+// Battery Event Handler
+static void handle_battery(BatteryChargeState charge_state) {
+  static char batt_text[5];
+
+  if(charge_state.is_charging)
+  {
+    snprintf(batt_text, 5, "c\nh");
+  } else {
+    snprintf(batt_text, 5, "%d\n%d", charge_state.charge_percent/10, charge_state.charge_percent%10);
+  }
+
+  text_layer_set_text(batt_layer, batt_text);
+}
 
 
 // Minute Tick Handler
-void handle_minute_tick(struct tm *now, TimeUnits units_changed) {
+static void handle_minute_tick(struct tm *now, TimeUnits units_changed) {
+
+  mincount++;
 
   // Change the time
   if(units_changed & MINUTE_UNIT) {
@@ -22,6 +51,16 @@ void handle_minute_tick(struct tm *now, TimeUnits units_changed) {
               strftime(time_text, 6, "%I:%M", now);
               
       text_layer_set_text(time_layer, time_text);
+
+      // Try make this interval customizable?
+      if (mincount == 10) {
+        // FIRE LAZERS HERE
+        
+        handle_battery(battery_state_service_peek());
+
+        mincount = 0;
+      }
+      
   }
   
   // Change the date
@@ -41,6 +80,13 @@ void handle_minute_tick(struct tm *now, TimeUnits units_changed) {
     }
   }
 
+
+
+
+  static char mintext[20];
+  snprintf(mintext, 20, "Fitbit - %d", mincount);
+  text_layer_set_text(fitbit_layer, mintext);
+
   
   // Debugging
   /*
@@ -59,7 +105,7 @@ static void window_load(Window *window) {
   // Set Background color to Black (For testing only)
   window_set_background_color(window, GColorBlack);
 
-
+  mincount = 0;
 
   GRect bounds = layer_get_bounds(window_layer);
 
@@ -128,6 +174,18 @@ static void window_load(Window *window) {
   struct tm *now = localtime(&then);
   handle_minute_tick(now, SECOND_UNIT | MINUTE_UNIT | HOUR_UNIT | DAY_UNIT | MONTH_UNIT | YEAR_UNIT);
 
+  // Subscribed to battery change events
+  battery_state_service_subscribe(handle_battery);
+
+  // Force initial battery check
+  handle_battery(battery_state_service_peek());
+
+  // Subscribe to bluetooth change events
+  bluetooth_connection_service_subscribe(handle_bluetooth);
+
+  // Force initial bluetooth state check
+  handle_bluetooth(bluetooth_connection_service_peek());
+
   /*
   // Build the debugging text layer
   text_layer = text_layer_create(GRect(2, 54, 140, 80));
@@ -140,6 +198,12 @@ static void window_load(Window *window) {
 }
 
 static void window_unload(Window *window) {
+  // Unsubscibe from events
+  battery_state_service_unsubscribe();
+  bluetooth_connection_service_unsubscribe();
+  tick_timer_service_unsubscribe();
+
+  // Destroy Graphics
   text_layer_destroy(text_layer);
   text_layer_destroy(time_layer);
   text_layer_destroy(date_layer);
@@ -149,6 +213,7 @@ static void window_unload(Window *window) {
   text_layer_destroy(batt_layer);
   text_layer_destroy(btc_layer);
   text_layer_destroy(fitbit_layer);
+
 }
 
 static void init(void) {
