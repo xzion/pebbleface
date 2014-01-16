@@ -1,17 +1,22 @@
 {
-  "uuid": "4fd78ba6-7e23-4a28-911c-5d3b3af4b322",
+  "uuid": "48a5aa65-4499-4230-9ea3-a452b77a2862",
   "shortName": "xzion1",
-  "longName": "xzion tickers+time",
+  "longName": "xzion1",
   "companyName": "xzion",
   "versionCode": 1,
-  "versionLabel": "0.1",
+  "versionLabel": "1.0.0",
   "watchapp": {
     "watchface": true
   },
   "appKeys": {
-    "dummy": 0
+    "requestBTC": 1,
+    "requestTemp" : 2,
+    "returnBTC" : 3,
+    "returnTemp" : 4,
+    "jsLoaded" : 5
   },
   "resources": {
     "media": []
   }
 }
+
