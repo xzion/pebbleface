@@ -16,7 +16,68 @@
     "jsLoaded" : 5
   },
   "resources": {
-    "media": []
+    "media": [
+      {
+        "name" : "BATT_CH",
+        "type" : "png",
+        "file" : "batt/battCHw.png"
+      },
+      {
+        "name" : "BATT_0",
+        "type" : "png",
+        "file" : "batt/batt0w.png"
+      },
+      {
+        "name" : "BATT_10",
+        "type" : "png",
+        "file" : "batt/batt10w.png"
+      },
+      {
+        "name" : "BATT_20",
+        "type" : "png",
+        "file" : "batt/batt20w.png"
+      },
+      {
+        "name" : "BATT_30",
+        "type" : "png",
+        "file" : "batt/batt30w.png"
+      },
+      {
+        "name" : "BATT_40",
+        "type" : "png",
+        "file" : "batt/batt40w.png"
+      },
+      {
+        "name" : "BATT_50",
+        "type" : "png",
+        "file" : "batt/batt50w.png"
+      },
+      {
+        "name" : "BATT_60",
+        "type" : "png",
+        "file" : "batt/batt60w.png"
+      },
+      {
+        "name" : "BATT_70",
+        "type" : "png",
+        "file" : "batt/batt70w.png"
+      },
+      {
+        "name" : "BATT_80",
+        "type" : "png",
+        "file" : "batt/batt80w.png"
+      },
+      {
+        "name" : "BATT_90",
+        "type" : "png",
+        "file" : "batt/batt90w.png"
+      },
+      {
+        "name" : "BATT_100",
+        "type" : "png",
+        "file" : "batt/batt100w.png"
+      }
+    ]
   }
 }
 

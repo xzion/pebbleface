@@ -2,6 +2,7 @@
 #include "xzion1.h"
 #include "messaging.h"
 #include "bitcoin.h"
+#include "resources.h"
 
 #define UPDATE_INTERVAL_MINS 5
 
@@ -12,12 +13,12 @@ TextLayer *date_layer;
 TextLayer *ampm_layer;
 TextLayer *icon_layer;
 TextLayer *temp_layer;
-TextLayer *batt_layer;
+BitmapLayer *batt_layer;
 TextLayer *btc_layer;
 TextLayer *fitbit_layer;
 
 static uint8_t mincount;
-
+static GBitmap *batt_img;
 
 // Bluetooth Event Handler
 static void handle_bluetooth(bool connected) {
@@ -33,15 +34,13 @@ static void handle_bluetooth(bool connected) {
 
 // Battery Event Handler
 static void handle_battery(BatteryChargeState charge_state) {
-	static char batt_text[5];
-	
-	if(charge_state.is_charging) {
-		snprintf(batt_text, 5, "c\nh");
-	} else {
-		snprintf(batt_text, 5, "%d\n%d", charge_state.charge_percent/10, charge_state.charge_percent%10);
-	}
+	// Destroy previous bitmap
+	gbitmap_destroy(batt_img);
 
-	text_layer_set_text(batt_layer, batt_text);
+	uint32_t batt_res_id = get_battery_resource(charge_state);
+	batt_img = gbitmap_create_with_resource(batt_res_id);
+
+	bitmap_layer_set_bitmap(batt_layer, batt_img);
 
 	// Debugging
 	static bool doubletick = true;
@@ -123,7 +122,9 @@ static void window_load(Window *window) {
 	// Set Background color to Black (For testing only)
 	window_set_background_color(window, GColorBlack);
 
+	// Initialize Globals
 	mincount = 0;
+	batt_img = gbitmap_create_with_resource(RESOURCE_ID_BATT_100);
 
 	GRect bounds = layer_get_bounds(window_layer);
 
@@ -163,7 +164,7 @@ static void window_load(Window *window) {
 	layer_add_child(window_layer, text_layer_get_layer(icon_layer));
 
 	// Build the temp layer
-	temp_layer = text_layer_create(GRect(42, 69, 80, 40));
+	temp_layer = text_layer_create(GRect(42, 69, 76, 40));
 	text_layer_set_background_color(temp_layer, GColorBlack);
 	text_layer_set_text_color(temp_layer, GColorWhite);
 	text_layer_set_text(temp_layer, "temp");
@@ -171,12 +172,9 @@ static void window_load(Window *window) {
 	layer_add_child(window_layer, text_layer_get_layer(temp_layer));
 
 	// Build the battery layer
-	batt_layer = text_layer_create(GRect(124, 69, 20, 40));
-	text_layer_set_background_color(batt_layer, GColorBlack);
-	text_layer_set_text_color(batt_layer, GColorWhite);
-	text_layer_set_text(batt_layer, "b\na");
-	text_layer_set_text_alignment(batt_layer, GTextAlignmentCenter);
-	layer_add_child(window_layer, text_layer_get_layer(batt_layer));
+	batt_layer = bitmap_layer_create(GRect(120, 69, 24, 40));
+	bitmap_layer_set_background_color(batt_layer, GColorBlack);
+	layer_add_child(window_layer, bitmap_layer_get_layer(batt_layer));
 
 	// Build the bitcoin price layer
 	btc_layer = text_layer_create(GRect(0, 111, 144, 25));
@@ -242,7 +240,7 @@ static void window_unload(Window *window) {
 	text_layer_destroy(ampm_layer);
 	text_layer_destroy(icon_layer);
 	text_layer_destroy(temp_layer);
-	text_layer_destroy(batt_layer);
+	bitmap_layer_destroy(batt_layer);
 	text_layer_destroy(btc_layer);
 	text_layer_destroy(fitbit_layer);
 
