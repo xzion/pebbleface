@@ -8,7 +8,9 @@ enum AppMessageKey {
   REQUEST_WEATHER = 2,
   RETURN_BTC = 3,
   RETURN_TEMP = 4,
-  JS_LOADED = 5
+  JS_LOADED = 5,
+  REQUEST_FITBIT = 6,
+  RETURN_FITBIT = 7
 };
 
 void app_message_init(void);

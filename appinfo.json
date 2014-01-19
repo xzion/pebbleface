@@ -13,7 +13,9 @@
     "requestTemp" : 2,
     "returnBTC" : 3,
     "returnTemp" : 4,
-    "jsLoaded" : 5
+    "jsLoaded" : 5,
+    "requestFitbit" : 6,
+    "returnFitbit" : 7
   },
   "resources": {
     "media": []

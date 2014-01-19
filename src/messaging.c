@@ -18,8 +18,6 @@ void app_message_init(void) {
 	app_message_open(inbound_size, outbound_size);
 }
 
-
-
 // AppMessage Handlers
 void out_sent_handler(DictionaryIterator *sent, void *context) {
    	// Outgoing message was successfully delivered (ACK)
@@ -50,13 +48,12 @@ void in_received_handler(DictionaryIterator *received, void *context) {
 		// JS has loaded, call an initial update of stuff!
 		APP_LOG(APP_LOG_LEVEL_DEBUG, "JS Loaded Received, calling intial update");
 
-		// Request BTC price
+		// Request initial data
 		request_bitcoin_price();
 
 		// Allow other components to send requests
 		js_initialized = true;
 	}
-
 
 	Tuple *btc_tuple = dict_find(received, RETURN_BTC);
 	if (btc_tuple) {
@@ -65,6 +62,9 @@ void in_received_handler(DictionaryIterator *received, void *context) {
 		APP_LOG(APP_LOG_LEVEL_DEBUG, "BTC Price Received: %li", btcpr);
 
 		update_bitcoin_price(btc_tuple->value->int32);
+
+		// Call the next update
+		
 	}
 
 	Tuple *temp_tuple = dict_find(received, RETURN_TEMP);
@@ -72,8 +72,6 @@ void in_received_handler(DictionaryIterator *received, void *context) {
 		// New temp received
 		APP_LOG(APP_LOG_LEVEL_DEBUG, "Temp Received: %s", temp_tuple->value->cstring);
 	}
-
-
 }
 
 

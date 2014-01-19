@@ -76,16 +76,16 @@ static void handle_minute_tick(struct tm *now, TimeUnits units_changed) {
 			request_bitcoin_price();
 
 			// Update the Battery Level
-			handle_battery(battery_state_service_peek());
+			//handle_battery(battery_state_service_peek());
 
 			// Reset the counter
 			mincount = 0;
 		}
 
 		// Debugging
-		static char mintext[20];
-		snprintf(mintext, 20, "Fitbit - %d", mincount);
-		text_layer_set_text(fitbit_layer, mintext);
+		// static char mintext[20];
+		// snprintf(mintext, 20, "Fitbit - %d", mincount);
+		// text_layer_set_text(fitbit_layer, mintext);
 	  
 	}
 

@@ -12,36 +12,32 @@ function gotNACK(e) {
 
 // BTC Request
 function GetBTCPrice() {
-	var response;
-	var req = new XMLHttpRequest();
-	var url = "http://data.mtgox.com/api/2/BTCUSD/money/ticker_fast";
+    var response;
+    var req = new XMLHttpRequest();
+    var url = "http://data.mtgox.com/api/2/BTCUSD/money/ticker_fast";
 
-	req.open('GET', url, true);
-	req.onload = function(e) {
-		if (req.readyState == 4 && req.status == 200) {
-		  	if (req.status == 200) {
-			    var response = JSON.parse(req.responseText);
+    req.open('GET', url, true);
+    req.onload = function(e) {
+        if (req.readyState == 4 && req.status == 200) {
+			if (req.status == 200) {
+			var response = JSON.parse(req.responseText);
 
-			    if (response) {
+				if (response) {
 					Pebble.sendAppMessage({
-						"returnBTC" : parseInt(response.data.last.value_int),
+			        	"returnBTC" : parseInt(response.data.last.value_int),
 					}, gotACK, gotNACK);
 					console.log("New BTC price sent!");
-				}
-		  	} else { 
-		  		console.log("Error"); 
-		  	}
-		}
-	}
-	req.send(null);
+			    }
+			} else { 
+				console.log("Error"); 
+			}
+        }
+    }
+    req.send(null);
 }
 
 
-
-
-
 Pebble.addEventListener("ready", function(e) {
-
 	// Send an initial message to the Pebble
 	Pebble.sendAppMessage({
 		"jsLoaded" : 1,
@@ -54,11 +50,15 @@ Pebble.addEventListener("ready", function(e) {
 
 Pebble.addEventListener("appmessage", function(e) {
     //console.log("Received message: " + e.payload["requestBTC"]);
+
     if (e.payload["requestBTC"]) {
     	// AppMessage requested new BTC price
     	console.log("Recieved AppMessage request for new BTC price");
     	GetBTCPrice();
     }
+
+	console.log("Updated data sent!");
+
     
   }
 );
