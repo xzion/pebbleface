@@ -18,6 +18,20 @@ void app_message_init(void) {
 	app_message_open(inbound_size, outbound_size);
 }
 
+
+void request_temperature(void) {
+	// Send AppMessage to phone requesting Temp
+	DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+
+    Tuplet value = TupletInteger(REQUEST_TEMP, 1);
+    dict_write_tuplet(iter, &value);
+
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting Temperature!");
+    app_message_outbox_send();
+} 
+
+
 // AppMessage Handlers
 void out_sent_handler(DictionaryIterator *sent, void *context) {
    	// Outgoing message was successfully delivered (ACK)
@@ -64,13 +78,20 @@ void in_received_handler(DictionaryIterator *received, void *context) {
 		update_bitcoin_price(btc_tuple->value->int32);
 
 		// Call the next update
-		
+		request_temperature();
+
 	}
 
 	Tuple *temp_tuple = dict_find(received, RETURN_TEMP);
 	if (temp_tuple) {
 		// New temp received
 		APP_LOG(APP_LOG_LEVEL_DEBUG, "Temp Received: %s", temp_tuple->value->cstring);
+
+		// Set the temperature
+		text_layer_set_text(temp_layer, temp_tuple->value->cstring);
+
+		// Call the next update
+
 	}
 }
 

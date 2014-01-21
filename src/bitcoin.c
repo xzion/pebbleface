@@ -6,7 +6,7 @@
 #define PRICE_KEY 	0xb001
 #define DAY_KEY 	0xb002
 
-// Redundant
+
 void request_bitcoin_price(void) {
 	// Send AppMessage to phone requesting BTC price
 	DictionaryIterator *iter;

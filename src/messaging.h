@@ -5,13 +5,14 @@ extern bool js_initialized;
 
 enum AppMessageKey {
   REQUEST_BTC = 1,
-  REQUEST_WEATHER = 2,
+  REQUEST_TEMP = 2,
   RETURN_BTC = 3,
   RETURN_TEMP = 4,
   JS_LOADED = 5
 };
 
 void app_message_init(void);
+void request_temperature(void);
 void out_sent_handler(DictionaryIterator *sent, void *context);
 void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context);
 void in_received_handler(DictionaryIterator *received, void *context);

@@ -9,6 +9,35 @@ function gotNACK(e) {
 }
 
 
+// UQ Weather Request
+function GetUQWeather() {
+    var response;
+    var req = new XMLHttpRequest();
+    var url = "http://ww2.gpem.uq.edu.au/UQweather/";
+
+    req.open('GET', url, true);
+    req.onload = function(e) {
+        if (req.readyState == 4 && req.status == 200) {
+			if (req.status == 200) {
+				var temp_pattern = />Temperature<\/a>[\s\S]*?(\d+\.\d).C/gm;
+				var temp_string = temp_pattern.exec(req.responseText);
+
+				if (temp_string != null) {
+					Pebble.sendAppMessage({
+			        	"returnTemp" : temp_string[1],
+					}, gotACK, gotNACK);
+					console.log("New UQ Temp sent!");
+				} else {
+					console.log("UQ Temp regex failed");
+				}
+			} else { 
+				console.log("Error"); 
+			}
+        }
+    }
+    req.send(null);
+}
+
 
 // BTC Request
 function GetBTCPrice() {
@@ -20,7 +49,7 @@ function GetBTCPrice() {
     req.onload = function(e) {
         if (req.readyState == 4 && req.status == 200) {
 			if (req.status == 200) {
-			var response = JSON.parse(req.responseText);
+				var response = JSON.parse(req.responseText);
 
 				if (response) {
 					Pebble.sendAppMessage({
@@ -55,9 +84,14 @@ Pebble.addEventListener("appmessage", function(e) {
     	// AppMessage requested new BTC price
     	console.log("Recieved AppMessage request for new BTC price");
     	GetBTCPrice();
+    	//GetUQWeather();
     }
 
-	console.log("Updated data sent!");
+    if (e.payload["requestTemp"]) {
+    	// AppMessage requested new Temperature
+    	console.log("Received AppMessage request for new Temp");
+    	GetUQWeather();
+    }
 
     
   }

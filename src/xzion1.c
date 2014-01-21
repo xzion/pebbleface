@@ -33,13 +33,16 @@ static void handle_bluetooth(bool connected) {
 
 
 // Battery Event Handler
+// ** Always fires twice when connected/disconnect from charge
 static void handle_battery(BatteryChargeState charge_state) {
 	// Destroy previous bitmap
 	gbitmap_destroy(batt_img);
 
+	// Create new bitmap
 	uint32_t batt_res_id = get_battery_resource(charge_state);
 	batt_img = gbitmap_create_with_resource(batt_res_id);
 
+	// Load onto layer
 	bitmap_layer_set_bitmap(batt_layer, batt_img);
 
 	// Debugging
@@ -49,7 +52,6 @@ static void handle_battery(BatteryChargeState charge_state) {
 		doubletick = false;
 
 		request_bitcoin_price();
-
 
 	} else {
 		doubletick = true;
@@ -167,6 +169,7 @@ static void window_load(Window *window) {
 	temp_layer = text_layer_create(GRect(42, 69, 76, 40));
 	text_layer_set_background_color(temp_layer, GColorBlack);
 	text_layer_set_text_color(temp_layer, GColorWhite);
+	text_layer_set_font(temp_layer, fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK));
 	text_layer_set_text(temp_layer, "temp");
 	text_layer_set_text_alignment(temp_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(temp_layer));
