@@ -2,7 +2,6 @@
 var coords;
 
 
-
 // ACK/NACK placeholder for debugging
 function gotACK(e) {
 	//console.log("Received ACK from watch!");
@@ -14,13 +13,12 @@ function gotNACK(e) {
 
 // OpenWeather Request
 function GetOpenWeather() {
+	// Recheck position
     window.navigator.geolocation.getCurrentPosition(
     	function(pos) {coords = pos.coords;},
     	function(err) {console.log("Location Error (" + err.code + "): " + err.message); },
     	{ "timeout" : 15000, "maximumAge" : 60000 }
    	);
-
-   	console.log("Got this far");
 
     var response;
     var req = new XMLHttpRequest();
@@ -28,6 +26,7 @@ function GetOpenWeather() {
 
     req.open('GET', url, true);
     req.onload = function(e) {
+    	console.log("Callback");
         if (req.readyState == 4 && req.status == 200) {
 			if (req.status == 200) {
 				var response = JSON.parse(req.responseText);
@@ -36,8 +35,6 @@ function GetOpenWeather() {
 					var new_weather = response.list[0];
 					// Convert kelvin to degrees and round to 1 decimal place
 					var ow_temp = Math.round(new_weather.main.temp*10-2731.5)/10;
-
-					console.log("OW result: temp - " + String(ow_temp) + ", cond - " + new_weather.weather[0].id);
 
 					Pebble.sendAppMessage({
 			        	"returnOW" : new_weather.weather[0].id,
@@ -114,7 +111,7 @@ function GetBTCPrice() {
 Pebble.addEventListener("ready", function(e) {
 	// Get Location
 	window.navigator.geolocation.getCurrentPosition(
-    	function(pos) {coords = pos.coords;},
+    	function(pos) {coords = pos.coords; Pebble.sendAppMessage({"jsLoaded" : 1,}, gotACK, gotNACK);},
     	function(err) {console.log("Location Error (" + err.code + "): " + err.message); },
     	{ "timeout" : 15000, "maximumAge" : 60000 }
    	);
@@ -136,15 +133,20 @@ Pebble.addEventListener("appmessage", function(e) {
     	// AppMessage requested new BTC price
     	console.log("Recieved AppMessage request for new BTC price");
     	GetBTCPrice();
-    	//GetUQWeather();
     }
 
     if (e.payload["requestTemp"]) {
     	// AppMessage requested new Temperature
-    	console.log("Received AppMessage request for new Temp");
-    	//GetUQWeather();
+    	console.log("Received AppMessage request for new UQ Temp");
+    	GetUQWeather();
+    }
+
+    if (e.payload["requestOW"]) {
+    	// AppMessage requested new Temperature
+    	console.log("Received AppMessage request for OpenWeather");
     	GetOpenWeather();
     }
+
 
     
   }

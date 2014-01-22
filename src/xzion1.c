@@ -3,6 +3,7 @@
 #include "messaging.h"
 #include "bitcoin.h"
 #include "resources.h"
+#include "weather.h"
 
 #define UPDATE_INTERVAL_MINS 5
 
@@ -11,7 +12,7 @@ TextLayer *text_layer;
 TextLayer *time_layer;
 TextLayer *date_layer;
 TextLayer *ampm_layer;
-TextLayer *icon_layer;
+BitmapLayer *icon_layer;
 TextLayer *temp_layer;
 BitmapLayer *batt_layer;
 TextLayer *btc_layer;
@@ -19,14 +20,19 @@ TextLayer *fitbit_layer;
 
 static uint8_t mincount;
 static GBitmap *batt_img;
+bool conn_state;
+bool use_uq_weather;
+
 
 // Bluetooth Event Handler
 static void handle_bluetooth(bool connected) {
 	if (connected) {
-		text_layer_set_text(icon_layer, "icon");
+		conn_state = true;
+		bitmap_layer_set_bitmap(icon_layer, cond_img);
 		vibes_long_pulse();
 	} else {
-		text_layer_set_text(icon_layer, "conn\nlost");
+		conn_state = false;
+		bitmap_layer_set_bitmap(icon_layer, gbitmap_create_with_resource(RESOURCE_ID_NO_BT));
 		vibes_long_pulse();
 	}
 }
@@ -118,7 +124,9 @@ static void window_load(Window *window) {
 
 	// Initialize Globals
 	mincount = 0;
+	use_uq_weather = true;
 	batt_img = gbitmap_create_with_resource(RESOURCE_ID_BATT_100);
+	cond_img = gbitmap_create_with_resource(RESOURCE_ID_COND_LOADING);
 
 	GRect bounds = layer_get_bounds(window_layer);
 
@@ -148,18 +156,15 @@ static void window_load(Window *window) {
 	layer_add_child(window_layer, text_layer_get_layer(date_layer));  
 
 	// Build the weather icon layer
-	icon_layer = text_layer_create(GRect(0, 69, 40, 40));
-	text_layer_set_background_color(icon_layer, GColorBlack);
-	text_layer_set_text_color(icon_layer, GColorWhite);
-	text_layer_set_text(icon_layer, "icon");
-	text_layer_set_text_alignment(icon_layer, GTextAlignmentCenter);
-	layer_add_child(window_layer, text_layer_get_layer(icon_layer));
+	icon_layer = bitmap_layer_create(GRect(0, 69, 40, 40));
+	bitmap_layer_set_background_color(icon_layer, GColorBlack);
+	layer_add_child(window_layer, bitmap_layer_get_layer(icon_layer));
 
 	// Build the temp layer
 	temp_layer = text_layer_create(GRect(42, 69, 76, 40));
 	text_layer_set_background_color(temp_layer, GColorBlack);
 	text_layer_set_text_color(temp_layer, GColorWhite);
-	text_layer_set_font(temp_layer, fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK));
+	text_layer_set_font(temp_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
 	text_layer_set_text(temp_layer, "...");
 	text_layer_set_text_alignment(temp_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(temp_layer));
@@ -231,7 +236,7 @@ static void window_unload(Window *window) {
 	text_layer_destroy(time_layer);
 	text_layer_destroy(date_layer);
 	text_layer_destroy(ampm_layer);
-	text_layer_destroy(icon_layer);
+	bitmap_layer_destroy(icon_layer);
 	text_layer_destroy(temp_layer);
 	bitmap_layer_destroy(batt_layer);
 	text_layer_destroy(btc_layer);

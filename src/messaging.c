@@ -2,9 +2,12 @@
 #include "xzion1.h"
 #include "messaging.h"
 #include "bitcoin.h"
+#include "weather.h"
 
 static uint8_t nackcount = 0;
+static char temp_text[10];
 bool js_initialized = false;
+
 
 void app_message_init(void) {
 
@@ -18,24 +21,16 @@ void app_message_init(void) {
 	app_message_open(inbound_size, outbound_size);
 }
 
-
-void request_temperature(void) {
-	// Send AppMessage to phone requesting Temp
-	DictionaryIterator *iter;
-    app_message_outbox_begin(&iter);
-
-    Tuplet value = TupletInteger(REQUEST_TEMP, 1);
-    dict_write_tuplet(iter, &value);
-
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Requesting Temperature!");
-    app_message_outbox_send();
-} 
-
-
 // AppMessage Handlers
 void out_sent_handler(DictionaryIterator *sent, void *context) {
    	// Outgoing message was successfully delivered (ACK)
   	//APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Out Sent!");
+}
+
+
+void in_dropped_handler(AppMessageResult reason, void *context) {
+	// Incoming message dropped
+	APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message In Dropped! Code: %d", reason);
 }
 
 
@@ -78,25 +73,53 @@ void in_received_handler(DictionaryIterator *received, void *context) {
 		update_bitcoin_price(btc_tuple->value->int32);
 
 		// Call the next update
-		request_temperature();
+		if (use_uq_weather) {
+			request_uq_temperature();
+		} else {
+			request_openweather();
+		}
+	}
+
+	Tuple *uqtemp_tuple = dict_find(received, RETURN_TEMP);
+	if (uqtemp_tuple) {
+		snprintf(temp_text, 10, "%s", uqtemp_tuple->value->cstring);
+		// New UQ temp received
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "UQ Temp Received: %s", uqtemp_tuple->value->cstring);
+
+		// Set the temperature
+		text_layer_set_text(temp_layer, temp_text);
+
+		// Call the next update
+		request_openweather();
 
 	}
 
-	Tuple *temp_tuple = dict_find(received, RETURN_TEMP);
-	if (temp_tuple) {
-		// New temp received
-		APP_LOG(APP_LOG_LEVEL_DEBUG, "Temp Received: %s", temp_tuple->value->cstring);
+	Tuple *owtemp_tuple = dict_find(received, RETURN_OWTEMP);
+	if (owtemp_tuple) {
+		// New UQ temp received
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "OW Temp Received: %s", owtemp_tuple->value->cstring);
 
 		// Set the temperature
-		text_layer_set_text(temp_layer, temp_tuple->value->cstring);
+		if (!use_uq_weather) {
+			snprintf(temp_text, 10, "%s", owtemp_tuple->value->cstring);
+			text_layer_set_text(temp_layer, temp_text);
+		}
+	}
+
+	Tuple *cond_tuple = dict_find(received, RETURN_OW);
+	if (cond_tuple) {
+		// New weather conditions received
+		int32_t cond = cond_tuple->value->int32;
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "OW Condition Code Received: %li", cond);
+
+		// Update the icon
+		update_weather_conditions(cond);
 
 		// Call the next update
 
 	}
-}
 
 
-void in_dropped_handler(AppMessageResult reason, void *context) {
-	// Incoming message dropped
-	APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message In Dropped! Code: %d", reason);
+
 }
+
