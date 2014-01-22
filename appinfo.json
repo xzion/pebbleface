@@ -2,6 +2,7 @@
   "uuid": "48a5aa65-4499-4230-9ea3-a452b77a2862",
   "shortName": "xzion1",
   "longName": "xzion1",
+  "capabilities" : [ "location" ],
   "companyName": "xzion",
   "versionCode": 1,
   "versionLabel": "1.0.0",
@@ -13,7 +14,10 @@
     "requestTemp" : 2,
     "returnBTC" : 3,
     "returnTemp" : 4,
-    "jsLoaded" : 5
+    "jsLoaded" : 5,
+    "requestOW" : 6,
+    "returnOW" : 7,
+    "returnOWTemp" : 8
   },
   "resources": {
     "media": [

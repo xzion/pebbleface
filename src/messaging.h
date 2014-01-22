@@ -8,7 +8,10 @@ enum AppMessageKey {
   REQUEST_TEMP = 2,
   RETURN_BTC = 3,
   RETURN_TEMP = 4,
-  JS_LOADED = 5
+  JS_LOADED = 5,
+  REQUEST_OW = 6,
+  RETURN_OW = 7,
+  RETURN_OWTEMP = 8
 };
 
 void app_message_init(void);

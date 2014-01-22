@@ -106,14 +106,6 @@ static void handle_minute_tick(struct tm *now, TimeUnits units_changed) {
 			text_layer_set_text(ampm_layer, "A\nM");
 		}
 	}
-
-	// Debugging
-	/*
-	static char testtext[10];
-	snprintf(testtext, 10, "%d", now->tm_hour);
-	text_layer_set_text(fitbit_layer, testtext);
-	*/
-
 }
 
 
@@ -136,8 +128,6 @@ static void window_load(Window *window) {
 
 	// Build the time layer
 	time_layer = text_layer_create(GRect(0, -8, 122, 48));
-	// text_layer_set_background_color(time_layer, GColorBlack);
-	// text_layer_set_text_color(time_layer, GColorWhite);
 	text_layer_set_text(time_layer, "TIME");
 	text_layer_set_font(time_layer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
 	text_layer_set_text_alignment(time_layer, GTextAlignmentCenter);
@@ -170,7 +160,7 @@ static void window_load(Window *window) {
 	text_layer_set_background_color(temp_layer, GColorBlack);
 	text_layer_set_text_color(temp_layer, GColorWhite);
 	text_layer_set_font(temp_layer, fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK));
-	text_layer_set_text(temp_layer, "temp");
+	text_layer_set_text(temp_layer, "...");
 	text_layer_set_text_alignment(temp_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(temp_layer));
 
