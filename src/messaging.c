@@ -36,7 +36,10 @@ void in_dropped_handler(AppMessageResult reason, void *context) {
 
 void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context) {
 	// Outgoing message failed (Received NACK)
-	nackcount++;
+	if (conn_state) {
+		nackcount++;
+	}
+	
 	APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Out Failed! Code: %d, Count: %d", reason, nackcount);
 
 	if (nackcount > 3) {
@@ -114,6 +117,15 @@ void in_received_handler(DictionaryIterator *received, void *context) {
 
 		// Update the icon
 		update_weather_conditions(cond);
+
+		// Display time of update
+		time_t then = time(NULL);
+		struct tm *now = localtime(&then);
+		static char update_time[20];
+		strftime(update_time, 20, "Last Update: %I:%M", now);      
+		text_layer_set_text(fitbit_layer, update_time);
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "Set Update Time");
+
 
 		// Call the next update
 

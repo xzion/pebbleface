@@ -135,54 +135,56 @@ static void window_load(Window *window) {
 	snprintf(boundtext, 20, "w=%d, h=%d\ntest", bounds.size.w, bounds.size.h);
 
 	// Build the time layer
-	time_layer = text_layer_create(GRect(0, -8, 122, 48));
+	time_layer = text_layer_create(GRect(0, -10, 122, 50));
 	text_layer_set_text(time_layer, "TIME");
-	text_layer_set_font(time_layer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
+	//text_layer_set_font(time_layer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
+	text_layer_set_font(time_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_MYRIADB_44)));
 	text_layer_set_text_alignment(time_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(time_layer));
 
 	// Build the ampm layer
-	ampm_layer = text_layer_create(GRect(124, -2, 20, 42));
-	text_layer_set_font(ampm_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+	ampm_layer = text_layer_create(GRect(122, -4, 22, 44));
+	text_layer_set_font(ampm_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_MYRIADB_20)));
 	text_layer_set_text(ampm_layer, "A\nM");
 	text_layer_set_text_alignment(ampm_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(ampm_layer));
 
 	// Build the date layer
-	date_layer = text_layer_create(GRect(0, 42, 144, 25));
-	text_layer_set_font(date_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+	date_layer = text_layer_create(GRect(0, 42, 144, 27));
+	text_layer_set_font(date_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_MYRIAD_20)));
 	text_layer_set_text(date_layer, "Date");
 	text_layer_set_text_alignment(date_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(date_layer));  
 
 	// Build the weather icon layer
-	icon_layer = bitmap_layer_create(GRect(0, 69, 40, 40));
+	icon_layer = bitmap_layer_create(GRect(0, 73, 40, 40));
 	bitmap_layer_set_background_color(icon_layer, GColorBlack);
 	layer_add_child(window_layer, bitmap_layer_get_layer(icon_layer));
 
 	// Build the temp layer
-	temp_layer = text_layer_create(GRect(42, 69, 76, 40));
-	text_layer_set_background_color(temp_layer, GColorBlack);
+	temp_layer = text_layer_create(GRect(42, 71, 76, 43));
+	text_layer_set_background_color(temp_layer, GColorClear);
 	text_layer_set_text_color(temp_layer, GColorWhite);
-	text_layer_set_font(temp_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
+	text_layer_set_font(temp_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_MYRIADB_32)));
 	text_layer_set_text(temp_layer, "...");
 	text_layer_set_text_alignment(temp_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(temp_layer));
 
 	// Build the battery layer
-	batt_layer = bitmap_layer_create(GRect(120, 69, 24, 40));
+	batt_layer = bitmap_layer_create(GRect(120, 73, 24, 40));
 	bitmap_layer_set_background_color(batt_layer, GColorBlack);
 	layer_add_child(window_layer, bitmap_layer_get_layer(batt_layer));
 
 	// Build the bitcoin price layer
-	btc_layer = text_layer_create(GRect(0, 111, 144, 25));
-	text_layer_set_font(btc_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+	btc_layer = text_layer_create(GRect(0, 118, 144, 24));
+	text_layer_set_font(btc_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_MYRIAD_18)));
 	text_layer_set_text(btc_layer, "Loading...");
 	text_layer_set_text_alignment(btc_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(btc_layer));
 
 	// Build the fitbit layer
-	fitbit_layer = text_layer_create(GRect(0, 138, 144, 30));
+	fitbit_layer = text_layer_create(GRect(0, 144, 144, 24));
+	text_layer_set_font(fitbit_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_MYRIAD_16)));
 	text_layer_set_text(fitbit_layer, "Loading...");
 	text_layer_set_text_alignment(fitbit_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(fitbit_layer));
@@ -231,6 +233,9 @@ static void window_unload(Window *window) {
 	bluetooth_connection_service_unsubscribe();
 	tick_timer_service_unsubscribe();
 
+	gbitmap_destroy(batt_img);
+	gbitmap_destroy(cond_img);
+
 	// Destroy Graphics
 	text_layer_destroy(text_layer);
 	text_layer_destroy(time_layer);
@@ -241,6 +246,8 @@ static void window_unload(Window *window) {
 	bitmap_layer_destroy(batt_layer);
 	text_layer_destroy(btc_layer);
 	text_layer_destroy(fitbit_layer);
+
+
 
 }
 

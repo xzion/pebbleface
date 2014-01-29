@@ -213,6 +213,36 @@
         "name" : "NO_BT",
         "type" : "png",
         "file" : "weather/29.png"
+      },
+      {
+        "name" : "FONT_MYRIADB_44",
+        "type" : "font",
+        "file" : "fonts/MyriadProBold.ttf"
+      },
+      {
+        "name" : "FONT_MYRIADB_32",
+        "type" : "font",
+        "file" : "fonts/MyriadProBold.ttf"
+      },
+      {
+        "name" : "FONT_MYRIADB_20",
+        "type" : "font",
+        "file" : "fonts/MyriadProBold.ttf"
+      },
+      {
+        "name" : "FONT_MYRIAD_20",
+        "type" : "font",
+        "file" : "fonts/MyriadPro.ttf"
+      },
+      {
+        "name" : "FONT_MYRIAD_18",
+        "type" : "font",
+        "file" : "fonts/MyriadPro.ttf"
+      },
+      {
+        "name" : "FONT_MYRIAD_16",
+        "type" : "font",
+        "file" : "fonts/MyriadPro.ttf"
       }
 
 

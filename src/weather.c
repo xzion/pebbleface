@@ -31,7 +31,8 @@ void request_openweather(void) {
 } 
 
 void update_weather_conditions(int32_t cond) {
-	//DO STUFF
+	
+	gbitmap_destroy(cond_img);
 	cond_img = gbitmap_create_with_resource(get_weather_resource(cond));
 
 	if (conn_state) {

@@ -97,7 +97,7 @@ void update_bitcoin_price(int32_t newPrice) {
 	}
 
 	static char btc_text[30];
-	snprintf(btc_text, 30, "B: $%d%s%d, %c%d%s%d%%", current_int, current_padder, 
+	snprintf(btc_text, 30, "$%d%s%d, %c%d%s%d%%", current_int, current_padder, 
 		current_decimal, change_dir, change_int, change_padder, change_decimal);
 
 	APP_LOG(APP_LOG_LEVEL_DEBUG, "BTC string: %s", btc_text);
